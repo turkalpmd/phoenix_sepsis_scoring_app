@@ -165,3 +165,54 @@ if __name__ == "__main__":
         processor.print_json_output(phoenix_8_dict)
 #For example, if pao2 is missing but fio2 and spo2 are provided, estimate pao2 using the Severinghaus equation: PaO2 = FiO2 * (713 - 47) - (PaCO2 / 0.8). Assume PaCO2 = 40 mmHg if not provided. Document any assumptions made in such derivations.
 #8. In the absence of documented neurological examination results, it is permissible to default the 'gcs_total' to 15, assuming normal neurological function.
+
+
+
+        # prompt = f"""
+        #              Based on the provided case summary {case_summary}, 
+        #              create a Python dictionary representing the data entry for a sepsis patient. 
+        #              The dictionary should include the following keys with their corresponding values, 
+        #              adhering to the specified guidelines.
+        # Construct a Python dictionary with these keys and notes:
+        # - 'pid': Patient identification number. Use {pid} for this value.
+        # - 'age': Patient's age in months. Calculate from the case summary, converting years to months always        
+        # - fio2: fraction of inspired oxygen
+        # - 'fio2': Fraction of inspired oxygen.
+        # - 'pao2': Partial pressure of oxygen in arterial blood (mmHg).
+        # - 'spo2': Pulse oximetry value (only valid when SpO2 ≤ 97%).
+        # - 'vent': Indicator for invasive mechanical ventilation (0 for no, 1 for yes).
+        # - 'gcs_total': Total Glasgow Coma Scale score (integer from 3 to 15).
+        # - 'pupil': Indicates if pupils are 'reactive' or 'fixed'.
+        # - 'platelets': Platelet count measured in 1,000 per microliter.
+        # - 'inr': International Normalized Ratio.
+        # - 'd_dimer': D-dimer level in mg/L FEU.
+        # - 'fibrinogen': Fibrinogen level in mg/dL.
+        # - 'dbp': Diastolic blood pressure (mmHg).
+        # - 'sbp': Systolic blood pressure (mmHg).
+        # - 'lactate': Lactate level in mmol/L (arterial or venous). Note: Lactate dehydrogenase is not lactate.
+        # - 'dobutamine': Indicator for receiving systemic dobutamine (0 for no, 1 for yes).
+        # - 'dopamine': Indicator for receiving systemic dopamine (0 for no, 1 for yes).
+        # - 'epinephrine': Indicator for receiving systemic epinephrine (0 for no, 1 for yes).
+        # - 'milrinone': Indicator for receiving systemic milrinone (0 for no, 1 for yes).
+        # - 'norepinephrine': Indicator for receiving systemic norepinephrine (0 for no, 1 for yes).
+        # - 'vasopressin': Indicator for receiving systemic vasopressin (0 for no, 1 for yes). Note: vasopressin is just vasopressors drug.
+        # - 'glucose': Glucose level in mg/dL.
+        # - 'anc': Absolute Neutrophil Count in 1,000 cells per cubic millimeter. If reported as a percentage of the total white blood cell (WBC) count, calculate using ANC = (Percentage × WBC) / 100.
+        # - 'alc': Absolute Lymphocyte Count in 1,000 cells per cubic millimeter. If not directly provided, calculate using ALC = WBC - ANC.
+        # - 'creatinine': Creatinine level in mg/dL.
+        # - 'bilirubin': Bilirubin level in mg/dL.
+        # - 'alt': Alanine aminotransferase level in IU/L.
+
+        # Guidelines:
+
+        # 1. Patient ID: Use {pid} as the value for 'pid'.
+        # 2. Age Calculation: Calculate the patient's age in months. If age is given in years, multiply by 12.
+        # 3. Missing Values: For any values not mentioned in the case summary, use None.
+        # 4. Indicator Values: For 'vent' and drug administration keys, use 0 for 'no' and 1 for 'yes'.
+        # 5. Data Types: Ensure numerical values use appropriate data types (int or float).
+        # 6. Unit Conversions: Perform necessary unit conversions to match the specified units.
+        # 7. Derived Values: If certain values are missing but can be derived from other data, compute them accordingly.
+        
+        # Output:
+        # Return only the Python dictionary containing the patient's data, without any additional text or explanations.
+        # """
