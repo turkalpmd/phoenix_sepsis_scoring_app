@@ -56,7 +56,6 @@ class SepsisCaseProcessor:
         5. Use appropriate data types for numerical values (int or float).
         6. Perform correct unit conversions.
         7. Derive Missing Values Where Applicable: If certain values are missing but can be calculated or estimated from other available data in the case summary, compute these values. 
-        8. In the absence of documented neurological examination results, it is permissible to default the 'gcs_total' to 15, assuming normal neurological function.
         Return only a valid Python dictionary, without additional explanations.
         """
         try:
@@ -111,6 +110,31 @@ class SepsisCaseProcessor:
             gcs=sepsis_df["gcs_total"],
             fixed_pupils=(sepsis_df["pupil"] == "Fixed").astype(int)
         )
+    
+    def calculate_phoenix_8_scores(self,sepsis_df):
+        
+        return phx.phoenix8(
+                                pf_ratio = sepsis_df["pao2"] / sepsis_df["fio2"],
+                                sf_ratio = np.where(sepsis_df["spo2"] <= 97, sepsis_df["spo2"] / sepsis_df["fio2"], np.nan),
+                                imv      = sepsis_df["vent"],
+                                other_respiratory_support = (sepsis_df["fio2"] > 0.21).astype(int).to_numpy(),
+                                vasoactives = sepsis_df["dobutamine"] + sepsis_df["dopamine"] + sepsis_df["epinephrine"] + sepsis_df["milrinone"] + sepsis_df["norepinephrine"] + sepsis_df["vasopressin"],
+                                lactate = sepsis_df["lactate"],
+                                map = sepsis_df["dbp"] + (sepsis_df["sbp"] - sepsis_df["dbp"]) / 3,
+                                platelets = sepsis_df['platelets'],
+                                inr = sepsis_df['inr'],
+                                d_dimer = sepsis_df['d_dimer'],
+                                fibrinogen = sepsis_df['fibrinogen'],
+                                gcs = sepsis_df["gcs_total"],
+                                fixed_pupils = (sepsis_df["pupil"] == "both-fixed").astype(int),
+                                glucose = sepsis_df["glucose"],
+                                anc = sepsis_df["anc"],
+                                alc = sepsis_df["alc"],
+                                creatinine = sepsis_df["creatinine"],
+                                bilirubin = sepsis_df["bilirubin"],
+                                alt = sepsis_df["alt"],
+                                age = sepsis_df["age"])
+        
 
     def print_json_output(self, data):
         json_output = json.dumps(data, indent=2)
@@ -133,4 +157,11 @@ if __name__ == "__main__":
         phoenix_dict_list = phoenix_scores.to_dict(orient='records')
         phoenix_dict = phoenix_dict_list[0] if phoenix_dict_list else {}
         processor.print_json_output(phoenix_dict)
+        
+        # For Phoenix 8
+        phoenix_8_scores = processor.calculate_phoenix_8_scores(sepsis_df)
+        phoenix_8_dict_list = phoenix_8_scores.to_dict(orient='records')
+        phoenix_8_dict = phoenix_8_dict_list[0] if phoenix_8_dict_list else {}
+        processor.print_json_output(phoenix_8_dict)
 #For example, if pao2 is missing but fio2 and spo2 are provided, estimate pao2 using the Severinghaus equation: PaO2 = FiO2 * (713 - 47) - (PaCO2 / 0.8). Assume PaCO2 = 40 mmHg if not provided. Document any assumptions made in such derivations.
+#8. In the absence of documented neurological examination results, it is permissible to default the 'gcs_total' to 15, assuming normal neurological function.
