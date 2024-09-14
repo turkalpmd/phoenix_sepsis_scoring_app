@@ -1,5 +1,5 @@
 numpy==1.23.5
 openai==0.27.2
 pandas==2.2.2
-phoenix==0.9.1
+phoenix-sepsis==1.1.1
 python-dotenv==1.0.1
